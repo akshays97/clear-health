@@ -28,6 +28,10 @@ function loadData() {
 
 var currentMarkers = [];
 function  putLocationsOnMap(data) {
+
+  var dngtitle = document.getElementById('dngtitle');
+  dngtitle.innerText = data.drg;
+
   map.setCenter({lat: data.center.lat, lng: data.center.lng});
   //remove currentMarkers
   for(var i = 0; i < currentMarkers.length; i++) {
@@ -42,12 +46,13 @@ function  putLocationsOnMap(data) {
   }
 
   var foundHospitals = data.hospitals;
-  foundHospitals.sort(function(a,b) { return a.oop-b.oop});
+  foundHospitals.sort(function(a,b) { return (a.cover-a.payment)-(b.cover-b.payment) });
 
   for(var i = 0; i < foundHospitals.length; i++) {
     //add marker on map
     currentMarkers.push(new google.maps.Marker({
       position: new google.maps.LatLng(foundHospitals[i].lat,foundHospitals[i].lng),
+      animation: google.maps.Animation.DROP,
       title: foundHospitals[i].name;
     }));
     currentMarkers[i].setMap(map);
@@ -60,9 +65,9 @@ function  putLocationsOnMap(data) {
     var nameCell = document.createElement("td");
     nameCell.innerText = foundHospitals[i].name;
     var addressCell = document.createElement("td");
-    addressCell.innerText = foundHospitals[i].address;
+    addressCell.innerText = foundHospitals[i].addr;
     var oopCell = document.createElement("td");
-    oopCell.innerText = "$" + foundHospitals[i].oop;
+    oopCell.innerText = "$" + (foundHospitals[i].cover - foundHospitals[i].payment);
     tr.appendChild(th);
     tr.appendChild(nameCell);
     tr.appendChild(addressCell);
